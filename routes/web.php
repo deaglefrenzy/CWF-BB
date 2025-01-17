@@ -23,6 +23,8 @@ Route::middleware(["LoggedIn"])->group(function () {
     Route::patch('/posts/{post}', [PostsController::class, 'update']);
     Route::delete('/posts/{post}', [PostsController::class, 'destroy']);
 
+    Route::post('/posts/{post}/tag', [PostsController::class, 'attach']);
+
     Route::post('/posts/{post}/comments', [CommentController::class, 'store']);
     Route::patch('/posts/{post}/comments/{comment}', [CommentController::class, 'update']);
     Route::delete('/posts/{post}/comments/{comment}', [CommentController::class, 'destroy']);
@@ -32,9 +34,8 @@ Route::middleware(["LoggedIn"])->group(function () {
 
     Route::get('/tags', [TagController::class, 'index']);
     Route::get('/tags/{tag:name}', [TagController::class, 'show']);
-    Route::post('/tags', [TagController::class, 'store']);
-    Route::delete('/tags', [TagController::class, 'destroy']);
-    Route::post('/posts/{post}/tag', [TagController::class, 'attach']);
+    Route::post('/tags', [TagController::class, 'store'])->middleware('Admin');
+    Route::delete('/tags', [TagController::class, 'destroy'])->middleware('Admin');
 
     Route::post('/logout', [LoginController::class, 'destroy']);
 });

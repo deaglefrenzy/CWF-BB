@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\PostResource;
 use App\Models\Post;
+use App\Models\Tag;
+use Illuminate\Support\Facades\Request;
 
 class PostsController extends Controller
 {
@@ -42,12 +44,6 @@ class PostsController extends Controller
         return response()->json(["message" => "post created " . $post->id, "post" => $post]);
     }
 
-    // HIGH ORDER FUNCTION
-    // f(x) = x + 1
-    // y = f(x)
-    // y = x + 1
-    // f(f(x)) = f(x) + 1
-
     public function update(Post $post)
     {
 
@@ -78,5 +74,15 @@ class PostsController extends Controller
         $post->delete();
 
         return response()->json(['message' => "Post deleted"]);
+    }
+
+    public function attach(Post $post)
+    {
+        $tagName = request('name');
+        $tag = Tag::firstOrCreate(['name' => $tagName]);
+
+        $post->tags()->syncWithoutDetaching($tag->id);
+
+        return response()->json(['message' => 'Tag attached to post successfully!']);
     }
 }

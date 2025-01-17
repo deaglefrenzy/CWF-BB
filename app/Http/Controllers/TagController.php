@@ -39,20 +39,12 @@ class TagController extends Controller
 
     public function destroy()
     {
-        request("name")->delete();
+        $tag = Tag::where('name', request('name'))->first();
+        $tag->delete();
 
         return response()->json(['message' => "Tag deleted"]);
     }
 
-
-    public function attach(Request $request, Post $post)
-    {
-        $tag = Tag::firstOrCreate(['name' => $request->tag_name]);
-
-        $post->tags()->syncWithoutDetaching($tag->id);
-
-        return response()->json(['message' => 'Tag attached to post successfully!']);
-    }
     // public function __invoke(Tag $tag)
     // {
     //     return response()->json(['message' => 'displaying posts with the tag ' . $tag->name, 'posts' => $tag->posts]);

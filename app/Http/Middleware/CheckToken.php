@@ -30,7 +30,6 @@ class CheckToken
             ->where('expires_at', '>', Carbon::now()->setTimezone('Asia/Makassar'))
             ->exists();
 
-        //dd(DB::getQueryLog());
 
         if (!$tokenExists) {
             return response()->json(['error' => 'Invalid token'], 401);
