@@ -11,10 +11,10 @@ class PostsController extends Controller
 {
     public function index()
     {
-        $posts = Post::with('comments', 'tags')->get();
-        //return response()->json($posts);
-        //return response()->json(["data" => $posts]);
-        return response()->json(["message" => "Displaying all posts", "posts" => PostResource::collection($posts)]);
+        //$posts = Post::with('comments', 'tags')->get();
+        $posts = Post::get();
+        return response()->json(["message" => "Displaying all posts", "data" => $posts]);
+        //return response()->json(["message" => "Displaying all posts", "posts" => PostResource::collection($posts)]);
     }
 
     public function show(string $id)
