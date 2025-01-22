@@ -10,9 +10,9 @@ use App\Models\Reaction;
 use Illuminate\Support\Facades\Route;
 
 //token
-// Route::get('/token', function () {
-//     return csrf_token();
-// });
+Route::get('/test', function () {
+    return "TEST";
+});
 
 
 // Route::middleware(["LoggedIn"])->group(function () {
