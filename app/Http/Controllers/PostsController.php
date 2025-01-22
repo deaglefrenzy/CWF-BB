@@ -17,18 +17,21 @@ class PostsController extends Controller
         //return response()->json(["message" => "Displaying all posts", "posts" => PostResource::collection($posts)]);
     }
 
-    public function show(string $id)
+    public function show($id)
     {
-        $post = Post::with('comments', 'tags')->find($id);
-        return response()->json(["message" => "displaying post with the id " . $post->id, "post" => $post]);
+        $post = Post::with('comments', 'tags')->findOrFail($id);
+        $duration = request('duration');
+
+        if ($duration >= 5) {
+            $post->viewcount++;
+            $post->save();
+        }
+
+        return response()->json(["message" => "Post id " . $post->id, "data" => $post]);
     }
 
     public function store()
     {
-        // if (Auth::guest()) {
-        //     return response()->json("must be logged in", 401);
-        //     die(1);
-        // }
 
         request()->validate([
             'title' => ['required', 'min:3'],
@@ -41,7 +44,7 @@ class PostsController extends Controller
             "user_id" => request("user_id")
         ]);
 
-        return response()->json(["message" => "post created " . $post->id, "post" => $post]);
+        return response()->json(["message" => "post created " . $post->id, "data" => $post]);
     }
 
     public function update(Post $post)
@@ -62,7 +65,7 @@ class PostsController extends Controller
             "body" => request("body"),
         ]);
 
-        return response()->json(["message" => "post updated", "updated post" => $post]);
+        return response()->json(["message" => "post updated", "data" => $post]);
     }
 
     public function destroy(Post $post)
