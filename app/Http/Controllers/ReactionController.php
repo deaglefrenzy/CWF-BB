@@ -4,9 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Models\Reaction;
 use App\Models\Post;
+use App\Traits\HasToken;
+use Illuminate\Http\Request;
 
 class ReactionController extends Controller
 {
+    use HasToken;
+
     public function store(Post $post)
     {
         $reaction = Reaction::create([
@@ -15,12 +19,13 @@ class ReactionController extends Controller
             "emoji" => request("emoji")
         ]);
 
-        return response()->json(["message" => "Reaction added to post " . $post->id, "data" => $reaction]);
+        return response()->json(["message" => "Reaction added to post " . $post->id, "data" => $reaction], 201);
     }
 
-    public function destroy(Post $post, Reaction $reaction)
+    public function destroy(Post $post, Reaction $reaction, Request $request)
     {
+        $this->idCheck($reaction, $request);
         $reaction->delete();
-        return response()->json(['message' => "Reaction deleted from", "data" => $post]);
+        return response()->json(['message' => "Reaction deleted from", "data" => $post], 204);
     }
 }

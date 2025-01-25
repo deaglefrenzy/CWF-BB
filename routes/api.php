@@ -10,11 +10,6 @@ use App\Models\Reaction;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Route;
 
-//token
-Route::get('/token', function () {
-    return "HELLO";
-});
-
 Route::middleware(["LoggedIn"])->group(function () {
 
     Route::get('/posts', [PostsController::class, 'index']);
@@ -35,7 +30,7 @@ Route::middleware(["LoggedIn"])->group(function () {
     Route::get('/tags', [TagController::class, 'index']);
     Route::get('/tags/{tag:name}', [TagController::class, 'show']);
     Route::post('/tags', [TagController::class, 'store'])->middleware('Admin');
-    Route::delete('/tags', [TagController::class, 'destroy'])->middleware('Admin');
+    Route::delete('/tags/{tag:name}', [TagController::class, 'destroy'])->middleware('Admin');
 
     Route::post('/logout', [LoginController::class, 'destroy']);
 });

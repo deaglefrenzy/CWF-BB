@@ -38,7 +38,7 @@ class LoginController extends Controller
             'message' => 'Login successful',
             'token' => $token,
             'user' => $user,
-        ], 200);
+        ]);
     }
 
     public function destroy(Request $request)
@@ -55,6 +55,6 @@ class LoginController extends Controller
 
         return response()->json([
             'message' => 'Logout successful',
-        ], 200);
+        ], 204);
     }
 }
