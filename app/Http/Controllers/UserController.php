@@ -20,6 +20,6 @@ class UserController extends Controller
             'password' => ['required']
         ]);
         User::create($attributes);
-        return response()->json(['message' => 'User created', 'user' => $attributes]);
+        return response()->json(['message' => 'User created', 'data' => $attributes]);
     }
 }
