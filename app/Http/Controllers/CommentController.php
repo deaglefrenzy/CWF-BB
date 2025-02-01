@@ -16,7 +16,7 @@ class CommentController extends Controller
     public function show(Post $id)
     {
         $post = Post::with('comments')->find($id);
-        return response()->json(["message" => "Comments from post with id: " . $post->id, "data" => $post->comments]);
+        return response()->json(["message" => "Semua komentar dari post: " . $post->id, "data" => $post->comments]);
     }
 
     public function store(Post $post, Request $request): JsonResponse
@@ -27,9 +27,9 @@ class CommentController extends Controller
         ];
 
         $messages = [
-            'content.required' => 'Comment is required.',
-            'user_id.required' => 'A valid user ID is required.',
-            'user_id.exists' => 'The specified user ID does not exist.',
+            'content.required' => 'Harus ada isi komentar.',
+            'user_id.required' => 'Harus ada user.',
+            'user_id.exists' => 'User tidak ditemukan.',
         ];
 
         try {
@@ -41,12 +41,12 @@ class CommentController extends Controller
             ]);
 
             return response()->json([
-                'message' => "Comment created successfully with id: {$comment->id}",
+                'message' => "Komentar terbuat dengan id: {$comment->id}",
                 'data' => $comment,
             ], 201);
         } catch (ValidationException $e) {
             return response()->json([
-                'message' => 'Validation failed.',
+                'message' => 'Validasi gagal.',
                 'errors' => $e->errors(),
             ], 422);
         }
@@ -61,7 +61,7 @@ class CommentController extends Controller
         ];
 
         $messages = [
-            'content.required' => 'Comment is required.',
+            'content.required' => 'Harus ada isi komentar.',
         ];
 
         try {
@@ -69,12 +69,12 @@ class CommentController extends Controller
             $comment->update($validatedData);
 
             return response()->json([
-                'message' => "Comment updated with id: {$comment->id}",
+                'message' => "Komentar diedit: {$comment->id}",
                 'data' => $comment,
             ]);
         } catch (ValidationException $e) {
             return response()->json([
-                'message' => 'Validation failed.',
+                'message' => 'Validasi gagal.',
                 'errors' => $e->errors(),
             ], 422);
         }
@@ -86,6 +86,6 @@ class CommentController extends Controller
 
         $comment->delete();
 
-        return response()->json(['message' => "Comment deleted"], 204);
+        return response()->json(['message' => "Komentar dihapus dari post"], 204);
     }
 }

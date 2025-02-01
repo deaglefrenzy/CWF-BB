@@ -5,9 +5,6 @@ use App\Http\Controllers\LoginController;
 use App\Http\Controllers\PostsController;
 use App\Http\Controllers\ReactionController;
 use App\Http\Controllers\TagController;
-use App\Http\Controllers\UserController;
-use App\Models\Reaction;
-use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(["LoggedIn"])->group(function () {

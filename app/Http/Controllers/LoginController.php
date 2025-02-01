@@ -21,7 +21,7 @@ class LoginController extends Controller
         $user = User::where('username', $request->username)->first();
 
         if (!$user || !Hash::check($request->password, $user->password)) {
-            return response()->json(['error' => 'Invalid credentials'], 401);
+            return response()->json(['error' => 'Username atau password salah.'], 401);
         }
 
         $token = Str::random(60);
@@ -35,7 +35,7 @@ class LoginController extends Controller
         ]);
 
         return response()->json([
-            'message' => 'Login successful',
+            'message' => 'Login sukses.',
             'token' => $token,
             'data' => $user,
         ]);
@@ -46,7 +46,7 @@ class LoginController extends Controller
         $token = $request->header('Authorization');
 
         if (!$token) {
-            return response()->json(['error' => 'No token provided'], 400);
+            return response()->json(['errors' => 'Token tidak ditemukan.'], 400);
         }
 
         DB::table('tokens')
@@ -54,7 +54,7 @@ class LoginController extends Controller
             ->delete();
 
         return response()->json([
-            'message' => 'Logout successful',
+            'message' => 'Logout sukses.',
         ], 204);
     }
 }

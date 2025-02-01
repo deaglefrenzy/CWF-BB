@@ -19,13 +19,13 @@ class ReactionController extends Controller
             "emoji" => request("emoji")
         ]);
 
-        return response()->json(["message" => "Reaction added to post " . $post->id, "data" => $reaction], 201);
+        return response()->json(["message" => "Reaction ditambahkan ke post " . $post->id, "data" => $reaction], 201);
     }
 
     public function destroy(Post $post, Reaction $reaction, Request $request)
     {
         $this->idCheck($reaction, $request);
         $reaction->delete();
-        return response()->json(['message' => "Reaction deleted from", "data" => $post], 204);
+        return response()->json(['message' => "Reaction dihapus"], 204);
     }
 }

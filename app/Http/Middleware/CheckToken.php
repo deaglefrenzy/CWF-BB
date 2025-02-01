@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Http\Controllers\PostsController;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -22,7 +23,7 @@ class CheckToken
         $token = $request->header('Authorization');
 
         if (!$token) {
-            return response()->json(['error' => 'No token provided'], 400);
+            return app(PostsController::class)->publik($request);
         }
 
         $tokenExists = DB::table('tokens')

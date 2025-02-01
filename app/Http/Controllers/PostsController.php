@@ -17,8 +17,21 @@ class PostsController extends Controller
     public function index()
     {
         $posts = Post::get();
-        return response()->json(["message" => "All posts", "data" => $posts]);
+        return response()->json(["message" => "Semua post", "data" => $posts]);
         //return response()->json(["message" => "Displaying all posts", "posts" => PostResource::collection($posts)]);
+    }
+
+    public function publik()
+    {
+        $posts = Post::whereHas('tags', function ($query) {
+            $query->where('name', 'Publik');
+        })->get();
+
+        if ($posts->isEmpty()) {
+            return response()->json(["message" => "Tidak ada post dengan tag Publik", "data" => []], 404);
+        }
+
+        return response()->json(["message" => "Semua post dengan tag Publik", "data" => $posts]);
     }
 
     public function show($id)
@@ -31,7 +44,7 @@ class PostsController extends Controller
             $post->save();
         }
 
-        return response()->json(["message" => "Post id " . $post->id, "data" => $post]);
+        return response()->json(["message" => "Post I " . $post->id, "data" => $post]);
     }
 
     public function store(Request $request): JsonResponse
@@ -43,11 +56,11 @@ class PostsController extends Controller
         ];
 
         $messages = [
-            'title.required' => 'The title is required.',
-            'title.min' => 'The title must be at least 3 characters.',
-            'body.required' => 'The body is required.',
-            'user_id.required' => 'A valid user ID is required.',
-            'user_id.exists' => 'The specified user ID does not exist.',
+            'title.required' => 'Harus punya judul.',
+            'title.min' => 'Judul minimal 3 karakter.',
+            'body.required' => 'Harus punya isi post.',
+            'user_id.required' => 'Harus ada user.',
+            'user_id.exists' => 'User tidak ditemukan.',
         ];
 
         try {
@@ -55,12 +68,12 @@ class PostsController extends Controller
             $post = Post::create($validatedData);
 
             return response()->json([
-                'message' => "Post created successfully with ID: {$post->id}",
+                'message' => "Post dibuat dengan ID: {$post->id}",
                 'data' => $post,
             ], 201);
         } catch (ValidationException $e) {
             return response()->json([
-                'message' => 'Validation failed.',
+                'message' => 'Validasi gagal.',
                 'errors' => $e->errors(),
             ], 422);
         }
@@ -77,9 +90,9 @@ class PostsController extends Controller
         ];
 
         $messages = [
-            'title.required' => 'The title is required.',
-            'title.min' => 'The title must be at least 3 characters.',
-            'body.required' => 'The body is required.',
+            'title.required' => 'Harus punya judul.',
+            'title.min' => 'Judul minimal 3 karakter.',
+            'body.required' => 'Harus punya isi post.',
         ];
 
         try {
@@ -87,12 +100,12 @@ class PostsController extends Controller
             $post->update($validatedData);
 
             return response()->json([
-                'message' => "Post updated with ID: {$post->id}",
+                'message' => "Post terupdate. ID: {$post->id}",
                 'data' => $post,
             ]);
         } catch (ValidationException $e) {
             return response()->json([
-                'message' => 'Validation failed.',
+                'message' => 'Validasi gagal.',
                 'errors' => $e->errors(),
             ], 422);
         }
@@ -103,7 +116,7 @@ class PostsController extends Controller
         $this->idCheck($post, $request);
         $post->delete();
 
-        return response()->json(['message' => "Post deleted"], 204);
+        return response()->json(['message' => "Post dihapus"], 204);
     }
 
     public function attach(Post $post)
@@ -113,6 +126,6 @@ class PostsController extends Controller
 
         $post->tags()->syncWithoutDetaching($tag->id);
 
-        return response()->json(['message' => 'Tag attached to post successfully!']);
+        return response()->json(['message' => 'Tag ditambahkan ke post', 'data' => $post]);
     }
 }

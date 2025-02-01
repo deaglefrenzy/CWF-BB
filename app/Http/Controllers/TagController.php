@@ -14,7 +14,7 @@ class TagController extends Controller
     public function index()
     {
         $tags = Tag::get();
-        return response()->json(["message" => "Tag index", "data" => $tags]);
+        return response()->json(["message" => "Semua tag", "data" => $tags]);
     }
 
     public function show(string $tag)
@@ -23,7 +23,7 @@ class TagController extends Controller
             $query->where('name', $tag);
         })->with('tags')->get();
 
-        return response()->json(["message" => "Post with tag " . $tag, "data" => $posts]);
+        return response()->json(["message" => "Semua post dgn tag " . $tag, "data" => $posts]);
     }
 
     public function store(Request $request)
@@ -33,11 +33,11 @@ class TagController extends Controller
         ];
 
         $messages = [
-            'name.required' => 'The tag name is required.',
-            'name.string' => 'The tag name must be a string.',
-            'name.max' => 'The tag name may not be greater than 15 characters.',
-            'name.regex' => 'The tag name must contain only alphanumeric characters or underscores.',
-            'name.unique' => 'Duplicate tag name.',
+            'name.required' => 'Nama tag harus terisi.',
+            'name.string' => 'Nama tag harus string.',
+            'name.max' => 'Nama tag tidak boleh lebih dari 15 karakter.',
+            'name.regex' => 'Nama tag hanya boleh alfanumerik dan garis bawah.',
+            'name.unique' => 'Nama tag sudah ada.',
         ];
         try {
             $validatedData = $request->validate($rules, $messages);
@@ -45,12 +45,12 @@ class TagController extends Controller
             $tag = Tag::create($validatedData);
 
             return response()->json([
-                'message' => 'Tag created successfully',
+                'message' => 'Tag dibuat.',
                 'data' => $tag,
             ], 201);
         } catch (ValidationException $e) {
             return response()->json([
-                'message' => 'Validation failed.',
+                'message' => 'Validasi gagal.',
                 'errors' => $e->errors(),
             ], 422);
         }
@@ -60,6 +60,6 @@ class TagController extends Controller
     {
         $tag->delete();
 
-        return response()->json(['message' => "Tag deleted"], 204);
+        return response()->json(['message' => "Tag dihapus"], 204);
     }
 }
