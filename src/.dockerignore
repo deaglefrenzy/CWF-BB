@@ -1,8 +1,6 @@
 .git/
 node_modules/
 vendor/
-storage/
-bootstrap/cache/
 .env
 .env.example
 docker-compose.override.yml
@@ -12,8 +10,4 @@ Dockerfile
 .idea/
 .vscode/
 *.log
-public/css/
-public/js/
-public/storage/
-public/hot
 tmp/
