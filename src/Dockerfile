@@ -17,7 +17,9 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 WORKDIR /var/www/CWF-BB
 
-RUN composer install --optimize-autoloader --no-dev; \
-    chown -R www-data:www-data /var/www/CWF-BB;
+RUN composer install --optimize-autoloader --no-dev
+
+RUN chown -R www-data:www-data /var/www/CWF-BB
 
 CMD ["php-fpm"]
+
