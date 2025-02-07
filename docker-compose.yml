@@ -34,11 +34,8 @@ services:
     restart: unless-stopped
     ports:
       - 8000:3306
-    environment:
-      MYSQL_DATABASE: bulletin_board
-      MYSQL_USER: admin_cwf
-      MYSQL_PASSWORD: password
-      MYSQL_ROOT_PASSWORD: password
+    env_file:
+      - .env
     volumes:
       - ./volumes/mysql:/var/lib/mysql
     networks:
