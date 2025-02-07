@@ -16,11 +16,20 @@ class PostsController extends Controller
 
     public function index()
     {
-        $posts = Post::get();
-        return response()->json(["message" => "Semua post", "data" => $posts]);
-        //return response()->json(["message" => "Displaying all posts", "posts" => PostResource::collection($posts)]);
-    }
+        $posts = Post::paginate(5);
 
+        $response = [
+            "message" => "Semua post",
+            "current_page" => $posts->currentPage(),
+            "per_page" => $posts->perPage(),
+            "total" => $posts->total(),
+            "last_page" => $posts->lastPage(),
+            "data" => $posts->items() // Use items() to get the actual post data
+        ];
+
+        return response()->json($response);
+    }
+    //return response()->json(["message" => "Displaying all posts", "posts" => PostResource::collection($posts)]);
     public function publik()
     {
         $posts = Post::whereHas('tags', function ($query) {
@@ -36,7 +45,18 @@ class PostsController extends Controller
 
     public function show($id)
     {
-        $post = Post::with('comments', 'tags')->findOrFail($id);
+        $post = Post::with([
+            'reactions' => function ($query) {
+                $query->select('id', 'emoji', 'post_id', 'user_id')
+                    ->with('user:id,username');
+            },
+            'comments' => function ($query) {
+                $query->select('id', 'content', 'post_id',  'user_id', 'created_at')
+                    ->with('user:id,username');
+            },
+            'tags:id,name',
+            'user:id,username'
+        ])->findOrFail($id);
         $duration = request('duration');
 
         if (!is_null($duration) && is_numeric($duration) && $duration >= 5) {
@@ -44,7 +64,7 @@ class PostsController extends Controller
             $post->save();
         }
 
-        return response()->json(["message" => "Post I " . $post->id, "data" => $post]);
+        return response()->json(["message" => "Post ID " . $post->id, "data" => $post]);
     }
 
     public function store(Request $request): JsonResponse

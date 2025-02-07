@@ -15,7 +15,9 @@ class CommentController extends Controller
 
     public function show(Post $id)
     {
-        $post = Post::with('comments')->find($id);
+        $post = Post::with(['comments' => function ($query) {
+            $query->with('user');
+        }])->find($id);
         return response()->json(["message" => "Semua komentar dari post: " . $post->id, "data" => $post->comments]);
     }
 

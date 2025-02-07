@@ -1,65 +1,49 @@
-version: '3.8'
-
 services:
-  # PHP-FPM Service
   app:
+    image: bb-laravel
     build:
-      context: .
+      context: ./src
       dockerfile: Dockerfile
     container_name: cwf_bb_app
     restart: unless-stopped
     working_dir: /var/www/CWF-BB
     volumes:
-      - .:/var/www/CWF-BB
+      - ./src:/var/www/CWF-BB
+    depends_on:
+      - db
     networks:
       - cwf_bb_network
 
-  # Nginx Service
   webserver:
-    image: nginx:alpine
+    image: nginx
     container_name: cwf_bb_webserver
     restart: unless-stopped
     ports:
       - "80:80"
     volumes:
-      - .:/var/www/CWF-BB
+      - ./src:/var/www/CWF-BB
       - ./nginx.conf:/etc/nginx/conf.d/default.conf
-    networks:
-      - cwf_bb_network
     depends_on:
       - app
+    networks:
+      - cwf_bb_network
 
-  # MariaDB Service
   db:
     image: mariadb:10.6
-    container_name: bulletin_board
+    container_name: cwf_bb_mysql
     restart: unless-stopped
+    ports:
+      - 8000:3306
     environment:
       MYSQL_DATABASE: bulletin_board
-      MYSQL_USER: root
-      MYSQL_PASSWORD: Chenwoo010203
-      MYSQL_ROOT_PASSWORD: Chenwoo010203
+      MYSQL_USER: admin_cwf
+      MYSQL_PASSWORD: password
+      MYSQL_ROOT_PASSWORD: password
     volumes:
-      - dbdata:/var/lib/mysql
+      - ./volumes/mysql:/var/lib/mysql
     networks:
       - cwf_bb_network
 
-  # Composer Service (for running Composer commands)
-  composer:
-    image: composer:latest
-    container_name: cwf_bb_composer
-    volumes:
-      - .:/var/www/CWF-BB
-    working_dir: /var/www/CWF-BB
-    networks:
-      - cwf_bb_network
-
-# Docker Networks
 networks:
-  laravel_network:
+  cwf_bb_network:
     driver: bridge
-
-# Docker Volumes
-volumes:
-  dbdata:
-    driver: local
