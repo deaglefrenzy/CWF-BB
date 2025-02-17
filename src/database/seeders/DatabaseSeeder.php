@@ -25,6 +25,7 @@ class DatabaseSeeder extends Seeder
         User::create([
             'username' => "admin",
             'password' => static::$password ??= Hash::make('passwordadmin'),
+            'fullname' => "ADMIN",
             'remember_token' => Str::random(10),
             'is_admin' => true
         ]);

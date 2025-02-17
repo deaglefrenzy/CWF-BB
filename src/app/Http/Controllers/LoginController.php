@@ -31,7 +31,7 @@ class LoginController extends Controller
             'user_id' => $user->id,
             'created_at' => Carbon::now()->setTimezone('Asia/Makassar'),
             'updated_at' => Carbon::now()->setTimezone('Asia/Makassar'),
-            'expires_at' => Carbon::now()->setTimezone('Asia/Makassar')->addHours(3)
+            'expires_at' => Carbon::now()->setTimezone('Asia/Makassar')->addHours(24)
         ]);
 
         return response()->json([

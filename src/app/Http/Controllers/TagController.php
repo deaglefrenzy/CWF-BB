@@ -58,8 +58,8 @@ class TagController extends Controller
 
     public function destroy(Tag $tag)
     {
+        $tag->posts()->detach();
         $tag->delete();
-
         return response()->json(['message' => "Tag dihapus"], 204);
     }
 }

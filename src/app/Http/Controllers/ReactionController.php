@@ -13,6 +13,15 @@ class ReactionController extends Controller
 
     public function store(Post $post)
     {
+        $userId = $post->user_id;
+        $existingReaction = Reaction::where('user_id', $userId)
+            ->where('post_id', $post->id)
+            ->first();
+
+        if ($existingReaction) {
+            $existingReaction->delete();
+        }
+
         $reaction = Reaction::create([
             "user_id" => $post->user_id,
             "post_id" => $post->id,

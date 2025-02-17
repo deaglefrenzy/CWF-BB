@@ -16,7 +16,7 @@ class PostsController extends Controller
 
     public function index()
     {
-        $posts = Post::paginate(5);
+        $posts = Post::paginate(15);
 
         $response = [
             "message" => "Semua post",
@@ -24,7 +24,9 @@ class PostsController extends Controller
             "per_page" => $posts->perPage(),
             "total" => $posts->total(),
             "last_page" => $posts->lastPage(),
-            "data" => $posts->items() // Use items() to get the actual post data
+            "next_page" => $posts->nextPageUrl(),
+            "previous_page" => $posts->previousPageUrl(),
+            "data" => $posts->items()
         ];
 
         return response()->json($response);
@@ -73,6 +75,7 @@ class PostsController extends Controller
             'title' => ['required', 'string', 'min:3'],
             'body' => ['required', 'string'],
             'user_id' => ['required', 'integer', 'exists:users,id'],
+            'tags_id' => ['exists:tags,id']
         ];
 
         $messages = [
@@ -85,11 +88,18 @@ class PostsController extends Controller
 
         try {
             $validatedData = $request->validate($rules, $messages);
-            $post = Post::create($validatedData);
+            $post = Post::create(Arr::except($validatedData, ['tags_id']));
 
+            if (isset($validatedData['tags_id']) && !empty($validatedData['tags_id'])) {
+                $post->tags()->attach($validatedData['tags_id']);
+            }
+
+            $post->refresh();
+
+            $newpost = Post::with('tags:id,name')->find($post->id);
             return response()->json([
                 'message' => "Post dibuat dengan ID: {$post->id}",
-                'data' => $post,
+                'data' => $newpost,
             ], 201);
         } catch (ValidationException $e) {
             return response()->json([
@@ -107,6 +117,7 @@ class PostsController extends Controller
         $rules = [
             'title' => ['required', 'string', 'min:3'],
             'body' => ['required', 'string'],
+            'tags_id' => ['exists:tags,id']
         ];
 
         $messages = [
@@ -117,11 +128,20 @@ class PostsController extends Controller
 
         try {
             $validatedData = $request->validate($rules, $messages);
-            $post->update($validatedData);
+            $post->update(Arr::except($validatedData, ['tags_id']));
+
+            if (isset($validatedData['tags_id'])) {
+                $post->tags()->sync($validatedData['tags_id']);
+            } else {
+                $post->tags()->sync([]);
+            }
+
+            $post->refresh();
+            $newpost = Post::with('tags:id,name')->find($post->id);
 
             return response()->json([
                 'message' => "Post terupdate. ID: {$post->id}",
-                'data' => $post,
+                'data' => $newpost,
             ]);
         } catch (ValidationException $e) {
             return response()->json([
@@ -134,18 +154,9 @@ class PostsController extends Controller
     public function destroy(Post $post, Request $request)
     {
         $this->idCheck($post, $request);
+        $post->tags()->detach();
         $post->delete();
 
         return response()->json(['message' => "Post dihapus"], 204);
-    }
-
-    public function attach(Post $post)
-    {
-        $tagName = request('name');
-        $tag = Tag::firstOrCreate(['name' => $tagName]);
-
-        $post->tags()->syncWithoutDetaching($tag->id);
-
-        return response()->json(['message' => 'Tag ditambahkan ke post', 'data' => $post]);
     }
 }

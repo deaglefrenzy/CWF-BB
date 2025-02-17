@@ -11,6 +11,7 @@ services:
       - ./src:/var/www/CWF-BB
     depends_on:
       - db
+      - mongodb
     networks:
       - cwf_bb_network
 
@@ -38,6 +39,19 @@ services:
       - .env
     volumes:
       - ./volumes/mysql:/var/lib/mysql
+    networks:
+      - cwf_bb_network
+
+mongodb:
+    image: mongo:latest
+    container_name: cwf_bb_mongodb
+    restart: unless-stopped
+    ports:
+      - 27017:27017
+    volumes:
+      - ./volumes/mongodb:/data/db
+    env_file:
+      - .env
     networks:
       - cwf_bb_network
 
