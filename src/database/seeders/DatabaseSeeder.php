@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Board;
 use App\Models\Post;
 use App\Models\User;
 use App\Models\Comment;
@@ -20,24 +21,52 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+        Board::insert([
+            ['name' => "Publik"],
+            ['name' => "Pengumuman"],
+            ['name' => "Direksi"],
+            ['name' => "HRD"],
+            ['name' => "GA"],
+            ['name' => "Produksi"],
+            ['name' => "Internal"],
+            ['name' => "IT"],
+            ['name' => "Security"],
+            ['name' => "Gudang"],
+            ['name' => "QC"],
+            ['name' => "Koperasi"],
+            ['name' => "Laundry"],
+            ['name' => "Keuangan"],
+            ['name' => "Teknisi"],
+            ['name' => "Accounting"]
+        ]);
 
         User::create([
             'username' => "admin",
             'password' => static::$password ??= Hash::make('passwordadmin'),
             'fullname' => "ADMIN",
-            'remember_token' => Str::random(10),
             'is_admin' => true
         ]);
-        User::factory(10)->create();
-        Tag::create([
-            'name' => "Publik"
-        ]);
-        Tag::create([
-            'name' => "Pengumuman"
-        ]);
+
+        $boards = Board::where('id', '>', 2)->get();
+        foreach ($boards as $board) {
+            User::factory()
+                ->state(['head_board_id' => $board->id])
+                ->state(['board_id' => $board->id])
+                ->create();
+        }
+        User::factory(20)
+            ->state(function () {
+                return ['board_id' => Board::where('id', '>', 2)->inRandomOrder()->first()->id];
+            })
+            ->create();
+
         $tag = Tag::factory(3)->create();
-        Post::factory(30)->hasAttached($tag)->create();
+        Post::factory(30)
+            ->hasAttached($tag)
+            ->state(function () {
+                return ['board_id' => Board::inRandomOrder()->first()->id];
+            })
+            ->create();
         Comment::factory(30)->create();
         Reaction::factory(20)->create();
     }

@@ -155,6 +155,8 @@ class PostsController extends Controller
     {
         $this->idCheck($post, $request);
         $post->tags()->detach();
+        $post->comments()->delete();
+        $post->reactions()->delete();
         $post->delete();
 
         return response()->json(['message' => "Post dihapus"], 204);

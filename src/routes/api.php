@@ -6,6 +6,7 @@ use App\Http\Controllers\PostsController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ReactionController;
 use App\Http\Controllers\TagController;
+use App\Http\Controllers\BoardController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(["LoggedIn"])->group(function () {
@@ -18,9 +19,9 @@ Route::middleware(["LoggedIn"])->group(function () {
 
     Route::get('/posts', [PostsController::class, 'index']);
     Route::get('/posts/{post}', [PostsController::class, 'show']);
-    Route::post('/posts', [PostsController::class, 'store'])->middleware('Admin');
-    Route::patch('/posts/{post}', [PostsController::class, 'update'])->middleware('Admin');
-    Route::delete('/posts/{post}', [PostsController::class, 'destroy'])->middleware('Admin');
+    Route::post('/posts', [PostsController::class, 'store']);
+    Route::patch('/posts/{post}', [PostsController::class, 'update']);
+    Route::delete('/posts/{post}', [PostsController::class, 'destroy']);
 
     Route::post('/posts/{post}/tag', [PostsController::class, 'attach']);
 
@@ -30,6 +31,9 @@ Route::middleware(["LoggedIn"])->group(function () {
 
     Route::post('/posts/{post}/reaction', [ReactionController::class, 'store']);
     Route::delete('/posts/{post}/reaction/{reaction}', [ReactionController::class, 'destroy']);
+
+    Route::get('/boards', [BoardController::class, 'index']);
+    Route::get('/boards/{board:name}', [BoardController::class, 'show']);
 
     Route::get('/tags', [TagController::class, 'index']);
     Route::get('/tags/{tag:name}', [TagController::class, 'show']);

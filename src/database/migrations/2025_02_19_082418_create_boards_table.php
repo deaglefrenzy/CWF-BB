@@ -11,16 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('posts', function (Blueprint $table) {
+        Schema::create('boards', function (Blueprint $table) {
             $table->id();
-            $table->string('title',255);
-            $table->text('body');
-            $table->unsignedBigInteger('user_id');
-            $table->unsignedBigInteger('viewcount')->default(0);
-            $table->integer('board_id');
+            $table->string("name");
             $table->timestamps();
-
-            $table->foreign('user_id')->references('id')->on('users');
         });
     }
 
@@ -29,6 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('posts');
+        Schema::dropIfExists('boards');
     }
 };
