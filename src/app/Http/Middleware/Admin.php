@@ -26,7 +26,7 @@ class Admin
             ->first();
 
         if (!$user || !$user->is_admin) {
-            return response()->json(['error' => 'Invalid token or user is not admin'], 401);
+            return response()->json(['error' => 'Token invalid atau user bukan admin.'], 401);
         }
 
         return $next($request);

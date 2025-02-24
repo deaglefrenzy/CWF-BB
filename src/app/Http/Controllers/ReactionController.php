@@ -33,8 +33,9 @@ class ReactionController extends Controller
 
     public function destroy(Post $post, Reaction $reaction, Request $request)
     {
-        $this->idCheck($reaction, $request);
-        $reaction->delete();
+        if (($this->idCheck($reaction, $request)) || $this->headBoardCheck($request)) {
+            $reaction->delete();
+        }
         return response()->json(['message' => "Reaction dihapus"], 204);
     }
 }

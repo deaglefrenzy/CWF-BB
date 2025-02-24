@@ -49,7 +49,7 @@ class UserController extends Controller
             'fullname.required' => 'Nama lengkap harus diisi.',
             'is_admin.required' => 'Status admin harus diisi.',
             'is_head.required' => 'Status head harus diisi.',
-            'board_id.required' => 'Board harus diisi.',
+            'board_id.required' => 'Bagian harus diisi.',
         ];
 
         try {
@@ -96,7 +96,7 @@ class UserController extends Controller
             'fullname.required' => 'Nama lengkap harus diisi.',
             'is_admin.required' => 'Status admin harus diisi.',
             'is_head.required' => 'Status head harus diisi.',
-            'board_id.required' => 'Board harus diisi.',
+            'board_id.required' => 'Bagian harus diisi.',
         ];
 
         try {

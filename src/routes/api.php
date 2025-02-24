@@ -5,7 +5,7 @@ use App\Http\Controllers\LoginController;
 use App\Http\Controllers\PostsController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ReactionController;
-use App\Http\Controllers\TagController;
+//use App\Http\Controllers\TagController;
 use App\Http\Controllers\BoardController;
 use Illuminate\Support\Facades\Route;
 
@@ -23,7 +23,7 @@ Route::middleware(["LoggedIn"])->group(function () {
     Route::patch('/posts/{post}', [PostsController::class, 'update']);
     Route::delete('/posts/{post}', [PostsController::class, 'destroy']);
 
-    Route::post('/posts/{post}/tag', [PostsController::class, 'attach']);
+    //Route::post('/posts/{post}/tag', [PostsController::class, 'attach']);
 
     Route::post('/posts/{post}/comments', [CommentController::class, 'store']);
     Route::patch('/posts/{post}/comments/{comment}', [CommentController::class, 'update']);
@@ -35,11 +35,11 @@ Route::middleware(["LoggedIn"])->group(function () {
     Route::get('/board', [BoardController::class, 'index']);
     Route::get('/board/{board:name}', [BoardController::class, 'show']);
 
-    Route::get('/tags', [TagController::class, 'index']);
-    Route::get('/tags/{tag:name}', [TagController::class, 'show']);
-    Route::post('/tags', [TagController::class, 'store'])->middleware('Admin');
-    Route::patch('/tags/{tag}', [TagController::class, 'update'])->middleware('Admin');
-    Route::delete('/tags/{tag:name}', [TagController::class, 'destroy'])->middleware('Admin');
+    // Route::get('/tags', [TagController::class, 'index']);
+    // Route::get('/tags/{tag:name}', [TagController::class, 'show']);
+    // Route::post('/tags', [TagController::class, 'store'])->middleware('Admin');
+    // Route::patch('/tags/{tag}', [TagController::class, 'update'])->middleware('Admin');
+    // Route::delete('/tags/{tag:name}', [TagController::class, 'destroy'])->middleware('Admin');
 
     Route::post('/logout', [LoginController::class, 'destroy']);
 });

@@ -33,7 +33,7 @@ class CheckToken
 
 
         if (!$tokenExists) {
-            return response()->json(['error' => 'Invalid token'], 401);
+            return response()->json(['error' => 'Token tidak valid.'], 401);
         }
 
         return $next($request);

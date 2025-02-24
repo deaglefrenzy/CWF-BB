@@ -10,17 +10,6 @@ use Illuminate\Http\Request;
 
 trait HasToken
 {
-    public function idCheck(Model $model, Request $request)
-    {
-        $isAdmin = $this->isAdmin($request);
-        $userId = $this->getUserFromToken($request)->id;
-        if ($model->user_id !== $userId && !$isAdmin) {
-            $modelName = class_basename($model);
-            abort(403, 'Anda bukan pemilik ' . $modelName . ' ini.');
-        }
-        return true;
-    }
-
     public function getUserFromToken(Request $request): User
     {
         $token = $request->header('Authorization');
@@ -34,22 +23,34 @@ trait HasToken
         return $user;
     }
 
-    public function isUser(Request $request)
-    {
-        return (bool) $this->getUserFromToken($request);
-    }
-
     public function isAdmin(Request $request)
     {
         $user = $this->getUserFromToken($request);
         return $user && $user->is_admin;
     }
 
+    public function idCheck(Model $model, Request $request)
+    {
+        $isAdmin = $this->isAdmin($request);
+        if ($isAdmin) {
+            return true;
+        }
+        $userId = $this->getUserFromToken($request)->id;
+        if ($model->user_id !== $userId) {
+            $modelName = class_basename($model);
+            abort(403, 'Anda bukan pemilik ' . $modelName . ' ini.');
+        }
+        return true;
+    }
+
     public function headBoardCheck(Request $request)
     {
         $isAdmin = $this->isAdmin($request);
+        if ($isAdmin) {
+            return true;
+        }
         $user = $this->getUserFromToken($request);
-        if ($isAdmin || ($user && $user->is_head)) {
+        if (!$user->is_head) {
             abort(403, 'User bukan kepala bagian.');
         }
         return true;
@@ -58,8 +59,11 @@ trait HasToken
     public function userBoardCheck(Request $request, int $post_board_id)
     {
         $isAdmin = $this->isAdmin($request);
+        if ($isAdmin) {
+            return true;
+        }
         $user = $this->getUserFromToken($request);
-        if ($isAdmin || ($user && $user->board_id === $post_board_id)) {
+        if ($user->board_id != $post_board_id) {
             abort(403, 'User bukan di bagian yang cocok.');
         }
         return true;

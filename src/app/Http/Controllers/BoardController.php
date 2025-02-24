@@ -10,7 +10,7 @@ class BoardController extends Controller
     public function index()
     {
         $boards = Board::get();
-        return response()->json(["message" => "Semua board", "data" => $boards]);
+        return response()->json(["message" => "Semua bagian ", "data" => $boards]);
     }
 
     public function show(string $board)
@@ -19,6 +19,6 @@ class BoardController extends Controller
             $query->where('name', $board);
         })->with('board')->get();
 
-        return response()->json(["message" => "Semua post dgn board " . $board, "data" => $posts]);
+        return response()->json(["message" => "Semua post di bagian " . $board, "data" => $posts]);
     }
 }

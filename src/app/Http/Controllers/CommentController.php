@@ -84,9 +84,9 @@ class CommentController extends Controller
 
     public function destroy(Post $post, Comment $comment, Request $request)
     {
-        $this->idCheck($comment, $request);
-
-        $comment->delete();
+        if (($this->idCheck($comment, $request)) || $this->headBoardCheck($request)) {
+            $comment->delete();
+        }
 
         return response()->json(['message' => "Komentar dihapus dari post"], 204);
     }

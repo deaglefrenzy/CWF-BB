@@ -14,7 +14,8 @@ class Post extends Model
     protected $fillable = [
         "title",
         "body",
-        "user_id"
+        "user_id",
+        "board_id"
     ];
 
     public function comments(): HasMany
@@ -37,14 +38,8 @@ class Post extends Model
         return $this->belongsTo(Board::class);
     }
 
-    public function tags(): BelongsToMany
-    {
-        return $this->belongsToMany(Tag::class);
-    }
-
-    // public function tag(string $name): void
+    // public function tags(): BelongsToMany
     // {
-    //     $tag = Tag::firstOrCreate(['name' => $name]);
-    //     $this->tags()->attach($tag);
+    //     return $this->belongsToMany(Tag::class);
     // }
 }
