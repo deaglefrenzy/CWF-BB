@@ -50,7 +50,7 @@ class DatabaseSeeder extends Seeder
         $boards = Board::where('id', '>', 2)->get();
         foreach ($boards as $board) {
             User::factory()
-                ->state(['head_board_id' => $board->id])
+                ->state(['is_head' => true])
                 ->state(['board_id' => $board->id])
                 ->create();
         }

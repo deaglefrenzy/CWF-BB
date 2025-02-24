@@ -33,7 +33,9 @@ class UserController extends Controller
             'password' => ['required', 'string', 'min:8', 'confirmed'],
             'password_confirmation' => ['required', 'string'],
             'fullname' => ['required', 'string'],
-            'is_admin' => ['required', 'boolean']
+            'is_admin' => ['required', 'boolean'],
+            'is_head' => ['required', 'boolean'],
+            'board_id' => ['required', 'integer']
         ];
 
         $messages = [
@@ -46,6 +48,8 @@ class UserController extends Controller
             'password_confirmation.required' => 'Konfirmasi password harus diisi.',
             'fullname.required' => 'Nama lengkap harus diisi.',
             'is_admin.required' => 'Status admin harus diisi.',
+            'is_head.required' => 'Status head harus diisi.',
+            'board_id.required' => 'Board harus diisi.',
         ];
 
         try {
@@ -74,7 +78,9 @@ class UserController extends Controller
         $rules = [
             'username' => ['required', 'string', 'min:5', 'unique:users,username,' . $user->id],
             'fullname' => ['required', 'string'],
-            'is_admin' => ['required', 'boolean']
+            'is_admin' => ['required', 'boolean'],
+            'is_head' => ['required', 'boolean'],
+            'board_id' => ['required', 'integer']
         ];
 
         if ($request->filled('password')) {
@@ -89,6 +95,8 @@ class UserController extends Controller
             'password.min' => 'Password minimal 8 karakter.',
             'fullname.required' => 'Nama lengkap harus diisi.',
             'is_admin.required' => 'Status admin harus diisi.',
+            'is_head.required' => 'Status head harus diisi.',
+            'board_id.required' => 'Board harus diisi.',
         ];
 
         try {

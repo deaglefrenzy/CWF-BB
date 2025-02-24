@@ -9,6 +9,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Validation\ValidationException;
 use App\Traits\HasToken;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\DB;
 
 class PostsController extends Controller
 {
@@ -16,7 +17,9 @@ class PostsController extends Controller
 
     public function index()
     {
-        $posts = Post::paginate(15);
+        $posts = Post::orderBy('created_at', 'desc')
+            ->orderBy('id', 'desc')
+            ->paginate(15);
 
         $response = [
             "message" => "Semua post",
@@ -34,18 +37,16 @@ class PostsController extends Controller
     //return response()->json(["message" => "Displaying all posts", "posts" => PostResource::collection($posts)]);
     public function publik()
     {
-        $posts = Post::whereHas('tags', function ($query) {
-            $query->where('name', 'Publik');
-        })->get();
+        $posts = Post::where('board_id', '1')->get();
 
         if ($posts->isEmpty()) {
-            return response()->json(["message" => "Tidak ada post dengan tag Publik", "data" => []], 404);
+            return response()->json(["message" => "Tidak ada post dengan board Publik", "data" => []], 404);
         }
 
-        return response()->json(["message" => "Semua post dengan tag Publik", "data" => $posts]);
+        return response()->json(["message" => "Semua post dengan board Publik", "data" => $posts]);
     }
 
-    public function show($id)
+    public function show($id, Request $request)
     {
         $post = Post::with([
             'reactions' => function ($query) {
@@ -57,11 +58,40 @@ class PostsController extends Controller
                     ->with('user:id,username');
             },
             'tags:id,name',
-            'user:id,username'
+            'user:id,username',
+            'board:id,name'
         ])->findOrFail($id);
-        $duration = request('duration');
 
-        if (!is_null($duration) && is_numeric($duration) && $duration >= 5) {
+        $user = $this->getUserFromToken($request);
+        $isUser = $this->isUser($request);
+        if ($isUser) {
+            $viewerIdentifier = $user->$id;
+        } else {
+            $viewerIdentifier = request()->ip();
+        }
+
+        $this->userBoardCheck($request, $post->board_id);
+
+        $viewExists = DB::table('post_views')
+            ->where('post_id', $post->id)
+            ->where(function ($query) use ($viewerIdentifier, $isUser) {
+                if ($isUser) {
+                    $query->where('user_id', $viewerIdentifier);
+                } else {
+                    $query->where('ip_address', $viewerIdentifier)
+                        ->whereNull('user_id');
+                }
+            })
+            ->exists();
+
+        if (!$viewExists) {
+            DB::table('post_views')->insert([
+                'post_id' => $post->id,
+                'user_id' => $isUser ? $viewerIdentifier : null,
+                'ip_address' => !$isUser ? $viewerIdentifier : null,
+                'viewed_at' => now()
+            ]);
+
             $post->viewcount++;
             $post->save();
         }
@@ -75,7 +105,8 @@ class PostsController extends Controller
             'title' => ['required', 'string', 'min:3'],
             'body' => ['required', 'string'],
             'user_id' => ['required', 'integer', 'exists:users,id'],
-            'tags_id' => ['exists:tags,id']
+            'tags_id' => ['exists:tags,id'],
+            'board_id' => ['required', 'integer', 'exists:boards,id']
         ];
 
         $messages = [
@@ -84,10 +115,16 @@ class PostsController extends Controller
             'body.required' => 'Harus punya isi post.',
             'user_id.required' => 'Harus ada user.',
             'user_id.exists' => 'User tidak ditemukan.',
+            'board_id.required' => 'Harus ada board.',
+            'board_id.exists' => 'Board tidak ditemukan.',
         ];
 
         try {
             $validatedData = $request->validate($rules, $messages);
+
+            $this->headBoardCheck($request);
+            $this->userBoardCheck($request, $validatedData["board_id"]);
+
             $post = Post::create(Arr::except($validatedData, ['tags_id']));
 
             if (isset($validatedData['tags_id']) && !empty($validatedData['tags_id'])) {
@@ -117,17 +154,22 @@ class PostsController extends Controller
         $rules = [
             'title' => ['required', 'string', 'min:3'],
             'body' => ['required', 'string'],
-            'tags_id' => ['exists:tags,id']
+            'tags_id' => ['exists:tags,id'],
+            'board_id' => ['required', 'integer', 'exists:board,id']
         ];
 
         $messages = [
             'title.required' => 'Harus punya judul.',
             'title.min' => 'Judul minimal 3 karakter.',
             'body.required' => 'Harus punya isi post.',
+            'board_id.required' => 'Harus ada board.',
         ];
 
         try {
             $validatedData = $request->validate($rules, $messages);
+
+            $this->headBoardCheck($request);
+            $this->userBoardCheck($request, $validatedData["board_id"]);
             $post->update(Arr::except($validatedData, ['tags_id']));
 
             if (isset($validatedData['tags_id'])) {
@@ -154,6 +196,7 @@ class PostsController extends Controller
     public function destroy(Post $post, Request $request)
     {
         $this->idCheck($post, $request);
+        $this->userBoardCheck($request, $post->board_id);
         $post->tags()->detach();
         $post->comments()->delete();
         $post->reactions()->delete();

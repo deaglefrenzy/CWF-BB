@@ -4,8 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Board;
 use App\Models\Post;
-use Illuminate\Http\Request;
-use Illuminate\Validation\ValidationException;
 
 class BoardController extends Controller
 {
@@ -17,9 +15,9 @@ class BoardController extends Controller
 
     public function show(string $board)
     {
-        $posts = Post::whereHas('boards', function ($query) use ($board) {
+        $posts = Post::whereHas('board', function ($query) use ($board) {
             $query->where('name', $board);
-        })->with('boards')->get();
+        })->with('board')->get();
 
         return response()->json(["message" => "Semua post dgn board " . $board, "data" => $posts]);
     }

@@ -17,9 +17,11 @@ return new class extends Migration
             $table->string('password');
             $table->string('fullname');
             $table->boolean('is_admin')->default(false);
-            $table->integer('head_board_id')->default(0);
+            $table->integer('is_head')->default(false);
             $table->integer('board_id')->default(0);
             $table->timestamps();
+
+            //$table->foreign('board_id')->references('id')->on('boards');
         });
 
         Schema::create('tokens', function (Blueprint $table) {

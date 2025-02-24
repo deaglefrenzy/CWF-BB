@@ -28,7 +28,7 @@ class UserFactory extends Factory
             'password' => static::$password ??= Hash::make('password'),
             'fullname' => fake()->unique()->name,
             'is_admin' => false,
-            'head_board_id' => 0,
+            'is_head' => false,
             'board_id' => 0
         ];
     }

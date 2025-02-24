@@ -32,8 +32,8 @@ Route::middleware(["LoggedIn"])->group(function () {
     Route::post('/posts/{post}/reaction', [ReactionController::class, 'store']);
     Route::delete('/posts/{post}/reaction/{reaction}', [ReactionController::class, 'destroy']);
 
-    Route::get('/boards', [BoardController::class, 'index']);
-    Route::get('/boards/{board:name}', [BoardController::class, 'show']);
+    Route::get('/board', [BoardController::class, 'index']);
+    Route::get('/board/{board:name}', [BoardController::class, 'show']);
 
     Route::get('/tags', [TagController::class, 'index']);
     Route::get('/tags/{tag:name}', [TagController::class, 'show']);
