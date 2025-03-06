@@ -88,6 +88,6 @@ class CommentController extends Controller
             $comment->delete();
         }
 
-        return response()->json(['message' => "Komentar dihapus dari post"], 204);
+        return response()->json(['message' => "Komentar dihapus dari post"], 200);
     }
 }

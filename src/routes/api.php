@@ -45,3 +45,4 @@ Route::middleware(["LoggedIn"])->group(function () {
 });
 
 Route::post('/login', [LoginController::class, 'store'])->name("login");
+Route::post('/posts/{post}/view', [PostsController::class, 'viewcount']);

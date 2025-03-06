@@ -8,6 +8,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Validation\ValidationException;
 use App\Traits\HasToken;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\DB;
 
 class UserController extends Controller
 {
@@ -124,8 +125,11 @@ class UserController extends Controller
 
     public function destroy(User $user)
     {
+        $user->comments()->delete();
+        $user->reactions()->delete();
+        DB::table('post_views')->where('user_id', $user->id)->delete();
         $user->delete();
 
-        return response()->json(['message' => "User dihapus"], 204);
+        return response()->json(['message' => "User dihapus"], 200);
     }
 }

@@ -10,7 +10,7 @@ use Illuminate\Http\Request;
 
 trait HasToken
 {
-    public function getUserFromToken(Request $request): User
+    public function getUserFromToken(Request $request)
     {
         $token = $request->header('Authorization');
         $tokenRecord = DB::table('tokens')->where('token', $token)->first();
@@ -38,7 +38,7 @@ trait HasToken
         $userId = $this->getUserFromToken($request)->id;
         if ($model->user_id !== $userId) {
             $modelName = class_basename($model);
-            abort(403, 'Anda bukan pemilik ' . $modelName . ' ini.');
+            abort(403, 'User bukan pemilik ' . $modelName . ' ini.');
         }
         return true;
     }
@@ -56,14 +56,14 @@ trait HasToken
         return true;
     }
 
-    public function userBoardCheck(Request $request, int $post_board_id)
+    public function userBoardCheck(Request $request, int $board_id)
     {
         $isAdmin = $this->isAdmin($request);
         if ($isAdmin) {
             return true;
         }
         $user = $this->getUserFromToken($request);
-        if ($user->board_id != $post_board_id) {
+        if ($user->board_id != $board_id) {
             abort(403, 'User bukan di bagian yang cocok.');
         }
         return true;

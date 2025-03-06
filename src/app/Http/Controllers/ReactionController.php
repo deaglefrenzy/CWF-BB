@@ -11,10 +11,10 @@ class ReactionController extends Controller
 {
     use HasToken;
 
-    public function store(Post $post)
+    public function store(Request $request, Post $post)
     {
-        $userId = $post->user_id;
-        $existingReaction = Reaction::where('user_id', $userId)
+        $user_id = $this->getUserFromToken($request)->id;
+        $existingReaction = Reaction::where('user_id', $user_id)
             ->where('post_id', $post->id)
             ->first();
 
@@ -23,7 +23,7 @@ class ReactionController extends Controller
         }
 
         $reaction = Reaction::create([
-            "user_id" => $post->user_id,
+            "user_id" => $user_id,
             "post_id" => $post->id,
             "emoji" => request("emoji")
         ]);
@@ -36,6 +36,6 @@ class ReactionController extends Controller
         if (($this->idCheck($reaction, $request)) || $this->headBoardCheck($request)) {
             $reaction->delete();
         }
-        return response()->json(['message' => "Reaction dihapus"], 204);
+        return response()->json(['message' => "Reaction dihapus"], 200);
     }
 }
