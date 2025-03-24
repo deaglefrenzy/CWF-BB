@@ -50,6 +50,8 @@ class PostsController extends Controller
             $message = "dengan pencarian" . $mes1 . $mes2 . $mes3;
         } else if ($this->isAdmin($request)) {
             $message = "Admin (Semua Post)";
+        } else if ($user->board_id == 4) {
+            $message = "HRD (Semua Post)";
         } else {
             $message = "Bagian " . Board::find($user->board_id)->name;
             $query->where(function ($q) use ($user) {

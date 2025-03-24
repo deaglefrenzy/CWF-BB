@@ -63,6 +63,9 @@ trait HasToken
             return true;
         }
         $user = $this->getUserFromToken($request);
+        if ($user->board_id == 4) {
+            return true;
+        }
         if ($user->board_id != $board_id) {
             abort(403, 'User bukan di bagian yang cocok.');
         }

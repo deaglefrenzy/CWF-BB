@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('password');
             $table->string('fullname');
             $table->boolean('is_admin')->default(false);
-            $table->integer('is_head')->default(false);
+            $table->boolean('is_head')->default(false);
             $table->integer('board_id')->default(0);
             $table->timestamps();
 
