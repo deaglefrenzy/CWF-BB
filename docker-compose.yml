@@ -35,7 +35,7 @@ services:
     ports:
       - 8000:3306
     env_file:
-      - .env
+      - ./src/.env
     volumes:
       - ./volumes/mysql:/var/lib/mysql
     networks:
