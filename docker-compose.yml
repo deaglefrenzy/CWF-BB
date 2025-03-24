@@ -3,7 +3,7 @@ services:
     image: bb-laravel
     build:
       context: ./src
-      dockerfile: Dockerfile
+      dockerfile: ./src/Dockerfile
     container_name: cwf_bb_app
     restart: unless-stopped
     working_dir: /var/www/CWF-BB
