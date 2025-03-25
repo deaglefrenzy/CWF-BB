@@ -15,11 +15,16 @@ RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd
 
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
+RUN chmod +x /usr/bin/composer
+
 WORKDIR /var/www/CWF-BB
 
-COPY . .
+COPY composer.json composer.lock ./
 
-RUN composer install --optimize-autoloader --no-dev
+RUN composer install --optimize-autoloader --no-interaction --no-dev || \
+    (echo "Composer install failed" && exit 1)
+
+COPY . .
 
 RUN chown -R root:root /var/www/CWF-BB
 
