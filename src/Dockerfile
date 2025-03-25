@@ -19,12 +19,10 @@ RUN chmod +x /usr/bin/composer
 
 WORKDIR /var/www/CWF-BB
 
-COPY composer.json composer.lock ./
+COPY . .
 
 RUN composer install --optimize-autoloader --no-interaction --no-dev || \
     (echo "Composer install failed" && exit 1)
-
-COPY . .
 
 RUN chown -R root:root /var/www/CWF-BB
 
