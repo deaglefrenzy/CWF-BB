@@ -19,8 +19,7 @@ WORKDIR /var/www/CWF-BB
 
 COPY . .
 
-#RUN composer install --optimize-autoloader --no-dev
-RUN composer install --optimize-autoloader --no-dev --ignore-platform-reqs
+RUN composer install --optimize-autoloader --no-dev
 
 RUN chown -R www-data:www-data /var/www/CWF-BB
 
