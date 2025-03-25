@@ -31,9 +31,9 @@ services:
   db:
     image: mariadb:10.6
     container_name: cwf_bb_mysql
-    restart: always
+    restart: unless-stopped
     ports:
-      - 8000:3306
+      - 7002:3306
     env_file:
       - ./src/.env
     volumes:
