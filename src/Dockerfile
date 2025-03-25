@@ -21,9 +21,7 @@ COPY . .
 
 RUN composer install --optimize-autoloader --no-dev
 
-RUN chown -R www-data:www-data /var/www/CWF-BB
-
-ENV PATH="$PATH:/usr/bin"
+RUN chown -R root:root /var/www/CWF-BB
 
 CMD ["php-fpm"]
 
