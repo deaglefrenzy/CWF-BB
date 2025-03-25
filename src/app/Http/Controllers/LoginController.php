@@ -21,7 +21,7 @@ class LoginController extends Controller
         $user = User::where('username', $request->username)->first();
 
         if (!$user || !Hash::check($request->password, $user->password)) {
-            return response()->json(['error' => 'Username atau password salah.'], 401);
+            return response()->json(['error' => 'Username atau password salah.'], 402);
         }
 
         $token = Str::random(60);
