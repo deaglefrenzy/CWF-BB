@@ -7,7 +7,7 @@ services:
     container_name: cwf_bb_app
     restart: unless-stopped
     ports:
-      - "7003:7003"
+      - 7003:7003
     working_dir: /var/www/CWF-BB
     volumes:
       - ./src:/var/www/CWF-BB
