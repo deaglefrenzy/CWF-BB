@@ -40,9 +40,9 @@ class DatabaseSeeder extends Seeder
         ]);
 
         User::create([
-            'username' => "admin",
-            'password' => Hash::make('passwordadmin'),
-            'fullname' => "Super Admin",
+            'username' => "administrator",
+            'password' => Hash::make('Chenwoo010203'),
+            'fullname' => "Admin Chenwoo",
             'is_admin' => true,
             'is_head' => true
         ]);
