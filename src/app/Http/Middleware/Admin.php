@@ -25,8 +25,8 @@ class Admin
             ->where('tokens.token', $token)
             ->first();
 
-        if (!$user || !$user->is_admin) {
-            return response()->json(['error' => 'Token invalid atau user bukan admin.'], 401);
+        if (!$user || (!$user->is_admin && !($user->is_head && $user->board_id === 4))) {
+            return response()->json(['error' => 'Token invalid atau user tidak memiliki akses HRD.'], 401);
         }
 
         return $next($request);

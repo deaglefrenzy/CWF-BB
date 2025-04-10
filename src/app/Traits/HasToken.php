@@ -29,6 +29,12 @@ trait HasToken
         return $user && $user->is_admin;
     }
 
+    public function isHeadHRD(Request $request)
+    {
+        $user = $this->getUserFromToken($request);
+        return $user && $user->is_head && $user->board_id === 4;
+    }
+
     public function idCheck(Model $model, Request $request)
     {
         $isAdmin = $this->isAdmin($request);
