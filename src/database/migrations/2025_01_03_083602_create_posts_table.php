@@ -18,6 +18,7 @@ return new class extends Migration
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('viewcount')->default(0);
             $table->integer('board_id');
+            $table->boolean('visible')->default(true);
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users');

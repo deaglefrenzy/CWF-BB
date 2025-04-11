@@ -18,12 +18,11 @@ Route::middleware(["LoggedIn"])->group(function () {
     Route::delete('/users/{user}', [UserController::class, 'destroy'])->middleware('Admin');
 
     Route::get('/posts', [PostsController::class, 'index']);
+    Route::get('/dashboard', [PostsController::class, 'dashboard']);
     Route::get('/posts/{post}', [PostsController::class, 'show']);
     Route::post('/posts', [PostsController::class, 'store']);
     Route::patch('/posts/{post}', [PostsController::class, 'update']);
     Route::delete('/posts/{post}', [PostsController::class, 'destroy']);
-
-    //Route::post('/posts/{post}/tag', [PostsController::class, 'attach']);
 
     Route::post('/posts/{post}/comments', [CommentController::class, 'store']);
     Route::patch('/posts/{post}/comments/{comment}', [CommentController::class, 'update']);
@@ -34,12 +33,6 @@ Route::middleware(["LoggedIn"])->group(function () {
 
     Route::get('/board', [BoardController::class, 'index']);
     Route::get('/board/{board:name}', [BoardController::class, 'show']);
-
-    // Route::get('/tags', [TagController::class, 'index']);
-    // Route::get('/tags/{tag:name}', [TagController::class, 'show']);
-    // Route::post('/tags', [TagController::class, 'store'])->middleware('Admin');
-    // Route::patch('/tags/{tag}', [TagController::class, 'update'])->middleware('Admin');
-    // Route::delete('/tags/{tag:name}', [TagController::class, 'destroy'])->middleware('Admin');
 
     Route::post('/logout', [LoginController::class, 'destroy']);
 });

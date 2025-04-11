@@ -15,7 +15,8 @@ class Post extends Model
         "title",
         "body",
         "user_id",
-        "board_id"
+        "board_id",
+        "visible"
     ];
 
     public function comments(): HasMany
@@ -37,9 +38,4 @@ class Post extends Model
     {
         return $this->belongsTo(Board::class);
     }
-
-    // public function tags(): BelongsToMany
-    // {
-    //     return $this->belongsToMany(Tag::class);
-    // }
 }
