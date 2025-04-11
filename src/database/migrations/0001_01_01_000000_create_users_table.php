@@ -20,6 +20,7 @@ return new class extends Migration
             $table->boolean('is_head')->default(false);
             $table->integer('board_id')->default(0);
             $table->timestamps();
+            $table->softDeletes();
 
             //$table->foreign('board_id')->references('id')->on('boards');
         });

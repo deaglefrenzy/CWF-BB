@@ -20,6 +20,7 @@ return new class extends Migration
             $table->integer('board_id');
             $table->boolean('visible')->default(true);
             $table->timestamps();
+            $table->softDeletes();
 
             $table->foreign('user_id')->references('id')->on('users');
         });

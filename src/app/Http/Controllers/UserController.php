@@ -29,6 +29,7 @@ class UserController extends Controller
 
     public function store(Request $request): JsonResponse
     {
+        $this->isAdmin($request);
         $rules = [
             'username' => ['required', 'string', 'min:5', 'unique:users,username'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
@@ -76,6 +77,7 @@ class UserController extends Controller
 
     public function update(User $user, Request $request)
     {
+        $this->isAdmin($request);
         $rules = [
             'username' => ['required', 'string', 'min:5', 'unique:users,username,' . $user->id],
             'fullname' => ['required', 'string'],
@@ -123,11 +125,11 @@ class UserController extends Controller
         }
     }
 
-    public function destroy(User $user)
+    public function destroy(User $user, Request $request)
     {
+        $this->isAdmin($request);
         $user->comments()->delete();
         $user->reactions()->delete();
-        DB::table('post_views')->where('user_id', $user->id)->delete();
         $user->delete();
 
         return response()->json(['message' => "User dihapus"], 200);
