@@ -19,6 +19,7 @@ Route::middleware(["LoggedIn"])->group(function () {
 
     Route::get('/posts', [PostsController::class, 'index']);
     Route::get('/dashboard', [PostsController::class, 'dashboard']);
+    Route::get('/dashboard/{post}', [PostsController::class, 'dbpost']);
     Route::get('/posts/{post}', [PostsController::class, 'show']);
     Route::post('/posts', [PostsController::class, 'store']);
     Route::patch('/posts/{post}', [PostsController::class, 'update']);

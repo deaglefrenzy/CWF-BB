@@ -141,6 +141,32 @@ class PostsController extends Controller
         return response()->json($response);
     }
 
+    public function dbpost($id, Request $request)
+    {
+        $user = $this->getUserFromToken($request);
+        $post = Post::findOrFail($id);
+
+        $board_id = Post::findOrFail($id)->board_id;
+        if ($board_id > 2) {
+            $this->userBoardCheck($request, $board_id);
+        }
+
+        $post = Post::with([
+            'reactions' => function ($query) {
+                $query->select('id', 'emoji', 'post_id', 'user_id')
+                    ->with('user:id,username');
+            },
+            'comments' => function ($query) {
+                $query->select('id', 'content', 'post_id',  'user_id', 'created_at')
+                    ->with('user:id,username');
+            },
+            'user:id,username,fullname',
+            'board:id,name'
+        ])->findOrFail($id);
+
+        return response()->json(["message" => "Post ID " . $post->id, "data" => $post]);
+    }
+
     protected function addViewCount($user, int $id)
     {
         if ($user) {
