@@ -71,6 +71,7 @@ class PostsController extends Controller
                 'board:id,name'
             ]
         )
+            ->where('visible', true)
             ->orderBy('created_at', 'desc')
             ->orderBy('id', 'desc')
             ->paginate(15);
