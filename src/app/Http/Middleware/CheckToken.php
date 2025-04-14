@@ -23,7 +23,7 @@ class CheckToken
         $token = $request->header('Authorization');
 
         if (!$token) {
-            return app(PostsController::class)->publik($request);
+            return app(PostsController::class)->index($request);
         }
 
         $tokenExists = DB::table('tokens')

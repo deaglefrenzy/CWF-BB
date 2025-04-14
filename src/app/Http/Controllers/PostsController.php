@@ -141,33 +141,6 @@ class PostsController extends Controller
         return response()->json($response);
     }
 
-    public function publik()
-    {
-        $posts = Post::where('board_id', '1')
-            ->where('visible', true)
-            ->with(['user:id,username,fullname'])
-            ->orderBy('created_at', 'desc')
-            ->orderBy('id', 'desc')
-            ->paginate(15);
-
-        $response = [
-            "message" => "Semua post Publik",
-            "current_page" => $posts->currentPage(),
-            "per_page" => $posts->perPage(),
-            "total" => $posts->total(),
-            "last_page" => $posts->lastPage(),
-            "next_page" => $posts->nextPageUrl(),
-            "previous_page" => $posts->previousPageUrl(),
-            "data" => $posts->items()
-        ];
-
-        if ($posts->isEmpty()) {
-            return response()->json(["message" => "Tidak ada post Publik"], 404);
-        }
-
-        return response()->json($response);
-    }
-
     protected function addViewCount($user, int $id)
     {
         if ($user) {
@@ -256,9 +229,11 @@ class PostsController extends Controller
 
         try {
             $validatedData = $request->validate($rules, $messages);
-
+            $board_id = $validatedData["board_id"];
             $this->headBoardCheck($request);
-            $this->userBoardCheck($request, $validatedData["board_id"]);
+            if ($board_id > 2) {
+                $this->userBoardCheck($request, $board_id);
+            }
 
             $post = Post::create($validatedData);
 
@@ -299,6 +274,13 @@ class PostsController extends Controller
 
         try {
             $validatedData = $request->validate($rules, $messages);
+
+            $board_id = $validatedData["board_id"];
+            $this->headBoardCheck($request);
+            if ($board_id > 2) {
+                $this->userBoardCheck($request, $board_id);
+            }
+
             $post->update($validatedData);
 
             $post->refresh();
@@ -319,7 +301,6 @@ class PostsController extends Controller
     public function destroy(Post $post, Request $request)
     {
         if (($this->idCheck($post, $request)) || $this->headBoardCheck($request)) {
-            //$post->tags()->detach();
             $post->comments()->delete();
             $post->reactions()->delete();
             DB::table('post_views')->where('post_id', $post->id)->delete();
